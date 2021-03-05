@@ -9,7 +9,6 @@ def filter_list(l):
 
     return l
 
-print(type([1,2,'a','b']))
 print(filter_list([1,'a','b',0,15]))
 
 
