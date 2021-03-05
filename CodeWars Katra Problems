@@ -35,3 +35,28 @@ def duplicate_encode(word):
 
     return a
     
+
+# def tribonacci(signature, n):
+#     fib = []
+#     if n == 1:
+#         fib.append(1)
+#     elif n < len(signature):
+#         for x in range(0, n):
+#             fib.append(signature[x])
+#     else:
+#         for y in signature:
+#             fib.append(signature[y])
+#
+#     fib_len = len(fib)
+#
+#     while fib_len < (n - 1):
+#         fib_len = len(fib)
+#         a = 0
+#         for i in range(fib_len - 3, fib_len):
+#             a += fib[i]
+#             fib.append(a)
+#     print(fib)
+#     return fib
+#
+#
+# tribonacci([1, 1, 1], 10)
