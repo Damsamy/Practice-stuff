@@ -21,3 +21,17 @@ print(filter_list([1,'a','b',0,15]))
 "recede"   =>  "()()()"
 "Success"  =>  ")())())"
 "(( @"     =>  "))((" 
+# solution is:
+
+def duplicate_encode(word):
+    a = ""
+    word2 = word.lower()
+    print(word2)
+    for x in word2:
+        if word2.count(x) >= 2:
+            a += ')'
+        else:
+            a += '('
+
+    return a
+    
