@@ -1,0 +1,105 @@
+# first app is a Calculator
+
+import PySimpleGUI as sg
+
+# function for creating a window with a layout and theme
+
+
+def create_window(theme):
+    # sets the theme
+    sg.theme(theme)
+    # this sets the font and button size
+    sg.set_options(font='Days-one', button_element_size=(5, 2))
+    # this tuple contains the size for the buttons
+    b_s = (5, 2)
+
+
+# layout of buttons, size, and function in calculator
+
+    layout = [
+        [sg.Text('Python Calculator', font='Days-one 15', expand_x=True, justification='right',
+                 right_click_menu=theme_menu, key='-TEXT-')],
+        [sg.Button('Clear', expand_x=True), sg.Button('Del', expand_x=True),
+         sg.Button('Enter', size=b_s)],
+        [sg.Button(7, size=b_s), sg.Button(8, size=b_s), sg.Button(9, size=b_s), sg.Button('*', size=b_s)],
+        [sg.Button(4, size=b_s), sg.Button(5, size=b_s), sg.Button(6, size=b_s), sg.Button('/', size=b_s)],
+        [sg.Button(1, size=b_s), sg.Button(2, size=b_s), sg.Button(3, size=b_s), sg.Button('-', size=b_s)],
+        [sg.Button(0, expand_x=True, expand_y=True), sg.Button('.', size=b_s), sg.Button('+', size=b_s)]
+
+    ]
+
+    return sg.Window('Calculator', layout)
+
+
+# function for taking inputs and putting them in a string to be shown in calculator output
+def output_text(event):
+    output = ''
+    for x in event:
+        output += ''
+        output += x
+    return output
+
+
+# this list contains the different color themes the user can select by right clicking on the text box
+theme_menu = ['menu', ['LightGrey1', 'dark', 'DarkGrey8', 'random']]
+# this sets the predetermined window them
+window = create_window('dark')
+
+current_num = []
+full_operation = []
+output_operation = ''
+
+# this 'while loop' runs the program until the user exits the app
+while True:
+    event, values = window.read()
+    if event == sg.WIN_CLOSED:
+        break
+
+    if event in theme_menu[1]:
+        window.close()
+        window = create_window(event)
+
+# this 'if' statement takes number inputs and adds them to the operations string
+    if event in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']:
+        current_num.append(event)
+        num_string = ''.join(current_num)
+        output_operation += output_text(event)
+        window['-TEXT-'].update('')
+        window['-TEXT-'].update(output_operation)
+
+# this 'if' statement takes operation inputs and adds them to the operations string
+    if event in ['+', '-', '/', '*'] and current_num != []:
+        full_operation.append(''.join(current_num))
+        current_num = []
+        full_operation.append(event)
+        print(output_operation)
+        output_operation += output_text(event)
+        window['-TEXT-'].update(output_operation)
+
+# this 'if' statement takes the string and evaluates the operations and returns the result
+    if event == 'Enter' and current_num != []:
+        full_operation.append(''.join(current_num))
+        result = eval(''.join(full_operation))
+        window['-TEXT-'].update(result)
+        full_operation = []
+        current_num = []
+        num_string = []
+        output_operation = ''
+
+# this 'if' statement clears the output and operation string
+    if event == 'Clear':
+            full_operation = []
+            current_num = []
+            num_string = []
+            output_operation = ''
+            window['-TEXT-'].update('')
+
+# this 'if' statement will delete the last input
+    if event == 'Del':
+        window['-TEXT-'].update(output_operation)
+        full_operation = output_operation[:-1]
+        window['-TEXT-'].update(output_operation)
+
+# if the 'while loop' didn't terminate properly this will close it.
+window.close()
+
