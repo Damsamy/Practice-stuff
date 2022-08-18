@@ -1,0 +1,43 @@
+# This is a fun little app that will convert any short text into a QR Code.
+# While not the most useful app(there are online QR code creators) it was a fun and easy to create app
+# using the 'qrcode' library for Python. It can also be useful for integration in other apps or for creating a QR code reader.
+
+import qrcode
+import PySimpleGUI as sg
+
+# This function creates a window and assignes names to buttons and adds features to the window
+def create_window():
+    layout = [
+        [
+            sg.Input('File name', key='-FILENAME-')],
+        [
+            sg.Input(key='-INPUT-'),
+            sg.Button('Convert', key='-CONVERT-')
+        ]
+
+    ]
+    return sg.Window('QR Code Creator', layout)
+
+# This code block uses functions from the QRcode library to create the Qr code image and set its size.
+def create_qr(data: str, file_name: str):
+    qr = qrcode.QRCode(version=None, box_size=15, border=2)
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="white", back_color="black")
+    img.save(file_name)
+
+# Here we create the window and use a for loop to keep it running until we close it
+window = create_window()
+while True:
+    event, values = window.read()
+    # This code detects when we press close and ends the app
+    if event == sg.WIN_CLOSED:
+        break
+        
+    # This code block detects when we press convert and takes the text and makes the QR code.
+    if event == '-CONVERT-':
+        code = values['-INPUT-']
+        file_name = values['-FILENAME-'] + '.png'
+        create_qr(code, file_name)
+
+window.close()
