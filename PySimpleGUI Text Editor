@@ -1,0 +1,84 @@
+import PySimpleGUI as sg
+from pathlib import Path
+
+# this function creates the window with its menus and features.
+def create_window(theme):
+
+    sg.theme(theme)
+    # Here we are creating some emojis just for fun that can be added through a menu
+    emojis = [
+        'Happy', [':)', 'XD', ':D', '<3'],
+        'sad', [':(', 'T_T'],
+        'Other', [':3']
+    ]
+    # here we are making a global variable that can be used to see when we are pressing an emoji from the menu
+    global emojis_events
+
+    emojis_events = emojis[1] + emojis[3] + emojis[5]
+    # Here we are creating the layout for the menu with names and sub menus
+    menu_layout = [
+        ['File', ['Open', 'Save', '---', 'Exit']],
+        ['Tools', ['Word Count']],
+        ['Add', emojis]
+    ]
+    # here we are asigning our layout menu and setting up text size and features for our window
+    layout = [
+        [sg.Menu(menu_layout)],
+        [sg.Text('Untitled', key='-DOCNAME-')],
+        [sg.Multiline(no_scrollbar=True, size=(40, 20), key='-TEXT_BOX-', right_click_menu=theme_menu)]
+    ]
+    
+    return sg.Window('Python Text Editor', layout)
+
+# this list sets the different themes for the menu
+theme_menu = ['menu', ['LightGrey1', 'dark', 'DarkGrey8', 'random']]
+# here we create the window and set 'dark' as the standard theme
+window = create_window('dark')
+
+# This while loop keeps the program running until we exit the window
+while True:
+    event, values = window.read()
+    # If click the close window button this will detect it and terminate the app
+    if event == sg.WIN_CLOSED:
+        break
+    # Here the code will detect if we click any of the different menus
+    if event in theme_menu[1]:
+        old_text = values['-TEXT_BOX-']
+        window.close()
+        window = create_window(event)
+        event, values = window.read(timeout=10)
+        window['-TEXT_BOX-'].update(old_text)
+        
+    # Here the code will let us open a new file to edit.
+    if event == 'Open':
+            file_path = sg.popup_get_file('Open', no_window=True)
+            if file_path:
+                file = Path(file_path)
+                window['-TEXT_BOX-'].update(file.read_text())
+                window['-DOCNAME-'].update(file_path.split('/'))
+                
+    # This block of code will let us save the file
+    if event == 'Save':
+        file_path = sg.popup_get_file('Save as', no_window=True, save_as=True) + '.txt'
+        file = Path(file_path)
+        file.write_text(values['-TEXT_BOX-'])
+        window['-DOCNAME-'].update(file_path.split('/')[-1])
+        
+    # This block of code returns the word count
+    if event == 'Word Count':
+        full_text = values['-TEXT_BOX-']
+        clean_text = full_text.replace('\n', ' ').split(' ')
+        word_count = len(clean_text)
+        char_count = len(''.join(clean_text))
+        sg.popup(f'words: {word_count}\ncharacters: {char_count}')
+        
+    # this block of code adds the emoji add function
+    if event in emojis_events:
+        current_text = values['-TEXT_BOX-']
+        new_text = current_text + ' ' + event
+        window['-TEXT_BOX-'].update(new_text)
+
+
+window.close()
+
+This simple text editor was created with PySimpleGUI and can create new, edit existing, and save txt files.
