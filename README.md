@@ -1,2 +1,2 @@
 # Practice-stuff
-Python practice code and ideas
+Python practice code, ideas and singlefile apps.
